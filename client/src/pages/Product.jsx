@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
-import { PRODUCTS, inr } from '../data/products';
+import { inr } from '../data/products';
 import { useCart } from '../context/CartContext';
 import ProductVisual from '../components/ui/ProductVisual';
 import ProductCard from '../components/ui/ProductCard';
@@ -24,12 +24,12 @@ const PRODUCT_REVIEWS = [
 export default function Product() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart, toggleWishlist, wishlist, showToast } = useCart();
+  const { addToCart, toggleWishlist, wishlist, showToast, products } = useCart();
   const [qty, setQty] = useState(1);
   const [pack, setPack] = useState(0);
   const [tab, setTab] = useState('how');
 
-  const product = PRODUCTS.find(p => p.id === id);
+  const product = products.find(p => p.id === id);
   if (!product) return (
     <div style={{ padding: '80px 32px', textAlign: 'center' }}>
       <p>Product not found. <span style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={() => navigate('/shop')}>Browse shop</span></p>
@@ -41,7 +41,7 @@ export default function Product() {
   const packMult = PACK_OPTIONS[pack].multiplier;
   const packDisc = pack === 1 ? 0.05 : pack === 2 ? 0.10 : 0;
   const effectivePrice = Math.round(p.price * packMult * (1 - packDisc));
-  const related = PRODUCTS.filter(x => x.cat === p.cat && x.id !== p.id).slice(0, 4);
+  const related = products.filter(x => x.cat === p.cat && x.id !== p.id).slice(0, 4);
 
   const cartQtyBtn = {
     width: 36, height: 36, border: 'none', background: 'transparent', cursor: 'pointer',

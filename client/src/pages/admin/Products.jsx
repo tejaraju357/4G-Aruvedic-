@@ -1,12 +1,14 @@
-import { PRODUCTS, CATEGORIES, inr } from '../../data/products';
+import { CATEGORIES, inr } from '../../data/products';
 import { useState } from 'react';
 import Icon from '../../components/ui/Icon';
+import { useCart } from '../../context/CartContext';
 
 export default function AdminProducts() {
   const [search, setSearch] = useState('');
   const [cat, setCat] = useState('all');
+  const { products } = useCart();
 
-  const list = PRODUCTS.filter(p => {
+  const list = products.filter(p => {
     if (cat !== 'all' && p.cat !== cat) return false;
     if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false;
     return true;

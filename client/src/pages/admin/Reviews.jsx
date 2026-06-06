@@ -1,15 +1,29 @@
-import { useState } from 'react';
-import { REVIEWS, PRODUCTS } from '../../data/products';
+import { useState, useEffect } from 'react';
+import { useCart } from '../../context/CartContext';
 import Stars from '../../components/ui/Stars';
+import api from '../../utils/api';
 
 export default function AdminReviews() {
-  const [reviews, setReviews] = useState(REVIEWS);
+  const [reviews, setReviews] = useState([]);
   const [filter, setFilter] = useState('All');
+  const { products } = useCart();
+
+  const fetchReviews = () => {
+    api.get('/reviews')
+      .then(res => setReviews(res.data))
+      .catch(err => console.error('Failed to load reviews:', err));
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
 
   const list = filter === 'All' ? reviews : reviews.filter(r => r.status === filter);
 
   const updateStatus = (id, status) => {
-    setReviews(prev => prev.map(r => r.id === id ? { ...r, status } : r));
+    api.patch(`/reviews/${id}`, { status })
+      .then(() => fetchReviews())
+      .catch(err => console.error('Failed to update review status:', err));
   };
 
   return (
@@ -28,7 +42,7 @@ export default function AdminReviews() {
 
       <div style={{ display: 'grid', gap: 14 }}>
         {list.map(r => {
-          const product = PRODUCTS.find(p => p.id === r.product);
+          const product = products.find(p => p.id === r.product);
           return (
             <div key={r.id} style={{ padding: 20, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>

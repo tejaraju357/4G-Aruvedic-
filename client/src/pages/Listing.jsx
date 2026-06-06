@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useState, useMemo } from 'react';
-import { PRODUCTS, CATEGORIES, inr } from '../data/products';
+import { CATEGORIES, inr } from '../data/products';
 import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ui/ProductCard';
 import TabPills from '../components/ui/TabPills';
@@ -19,14 +19,14 @@ export default function Listing() {
   const [searchParams] = useSearchParams();
   const [sort, setSort] = useState('default');
   const [viewMode, setViewMode] = useState('grid');
-  const { addToCart, toggleWishlist, wishlist } = useCart();
+  const { addToCart, toggleWishlist, wishlist, products } = useCart();
 
   const activeCat = searchParams.get('cat') || 'all';
   const searchQ   = searchParams.get('q')   || '';
   const catTabs   = [{ value: 'all', label: 'All' }, ...CATEGORIES.map(c => ({ value: c.id, label: c.label }))];
 
   const filtered = useMemo(() => {
-    let list = PRODUCTS;
+    let list = products;
     if (activeCat !== 'all') list = list.filter(p => p.cat === activeCat);
     if (searchQ) list = list.filter(p =>
       p.name.toLowerCase().includes(searchQ.toLowerCase()) ||
@@ -36,7 +36,7 @@ export default function Listing() {
     if (sort === 'price-high') return [...list].sort((a, b) => b.price - a.price);
     if (sort === 'rating')     return [...list].sort((a, b) => b.rating - a.rating);
     return list;
-  }, [activeCat, sort, searchQ]);
+  }, [products, activeCat, sort, searchQ]);
 
   const activeCatLabel = CATEGORIES.find(c => c.id === activeCat)?.label || 'All Products';
 

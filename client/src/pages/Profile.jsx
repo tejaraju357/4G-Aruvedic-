@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { PRODUCTS, ORDERS, inr } from '../data/products';
+import { useState, useEffect } from 'react';
+import { inr } from '../data/products';
 import { useCart } from '../context/CartContext';
 import ProductVisual from '../components/ui/ProductVisual';
 import Btn from '../components/ui/Btn';
 import Icon from '../components/ui/Icon';
+import api from '../utils/api';
 
 function Field({ label, value, onChange, span = 1 }) {
   return (
@@ -23,8 +24,17 @@ function Field({ label, value, onChange, span = 1 }) {
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { user, setUser } = useCart();
+  const { user, setUser, products } = useCart();
   const [tab, setTab] = useState('orders');
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    if (tab === 'orders') {
+      api.get('/orders')
+        .then(res => setOrders(res.data))
+        .catch(err => console.error('Failed to load orders:', err));
+    }
+  }, [tab]);
 
   return (
     <div style={{ padding: '40px 32px 120px', maxWidth: 1280, margin: '0 auto' }}>
@@ -63,7 +73,7 @@ export default function Profile() {
             <div>
               <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 500, marginTop: 0 }}>Order history</h2>
               <div style={{ display: 'grid', gap: 14, marginTop: 18 }}>
-                {ORDERS.slice(0, 6).map(o => (
+                {orders.map(o => (
                   <div key={o.id} style={{ padding: 20, border: '1px solid var(--line)', borderRadius: 'var(--radius)', background: 'var(--surface)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
@@ -77,7 +87,7 @@ export default function Profile() {
                     </div>
                     <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--line)', display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
                       {o.items.map(it => {
-                        const p = PRODUCTS.find(x => x.id === it.p);
+                        const p = products.find(x => x.id === it.p);
                         if (!p) return null;
                         return (
                           <div key={it.p} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>

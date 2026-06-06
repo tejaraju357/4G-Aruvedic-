@@ -230,6 +230,14 @@ const store = {
     coupons = coupons.filter(c => c.id !== id);
     saveData();
   },
+  updateCouponStatus: (id, status) => {
+    const c = coupons.find(c => c.id === id);
+    if (c) {
+      c.status = status;
+      saveData();
+    }
+    return c;
+  },
 
   getReviews: () => reviews,
   updateReview: (id, status) => {

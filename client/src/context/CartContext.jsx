@@ -1,14 +1,26 @@
-import { createContext, useContext, useState, useCallback } from 'react';
-import { PRODUCTS } from '../data/products';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { PRODUCTS as STATIC_PRODUCTS } from '../data/products';
+import api from '../utils/api';
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
+  const [products, setProducts]   = useState(STATIC_PRODUCTS);
   const [cart, setCart]           = useState([{ id: 'kumkumadi', qty: 1 }, { id: 'ashwa', qty: 2 }]);
   const [wishlist, setWishlist]   = useState(['bhringraj', 'brahmi']);
   const [user, setUser]           = useState({ name: 'Aanya Sharma', email: 'aanya@gmail.com' });
   const [toast, setToast]         = useState('');
   const [lastOrder, setLastOrder] = useState({ id: 'AR-10429', total: 2284 });
+
+  useEffect(() => {
+    api.get('/products')
+      .then(res => {
+        if (res.data && res.data.products) {
+          setProducts(res.data.products);
+        }
+      })
+      .catch(err => console.error('Failed to fetch live products:', err));
+  }, []);
 
   const showToast = useCallback((msg) => {
     setToast(msg);
@@ -21,9 +33,9 @@ export function CartProvider({ children }) {
       if (existing) return prev.map(c => c.id === id ? { ...c, qty: c.qty + qty } : c);
       return [...prev, { id, qty }];
     });
-    const p = PRODUCTS.find(p => p.id === id);
+    const p = products.find(p => p.id === id);
     if (p) showToast(`${p.name} added to cart`);
-  }, [showToast]);
+  }, [products, showToast]);
 
   const removeFromCart = useCallback((id) => {
     setCart(prev => prev.filter(c => c.id !== id));
@@ -38,17 +50,24 @@ export function CartProvider({ children }) {
     setWishlist(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   }, []);
 
-  const placeOrder = useCallback((address, payment) => {
-    const items = cart.map(c => ({ ...PRODUCTS.find(p => p.id === c.id), qty: c.qty })).filter(x => x.id);
-    const sub = items.reduce((s, i) => s + i.price * i.qty, 0);
-    const shipping = sub > 999 ? 0 : 80;
-    const tax = Math.round(sub * 0.05);
-    const total = sub + shipping + tax;
-    const newId = 'AR-' + Math.floor(10430 + Math.random() * 100);
-    setLastOrder({ id: newId, total });
-    setCart([]);
-    return { id: newId, total };
-  }, [cart]);
+  const placeOrder = useCallback(async (address, payment) => {
+    try {
+      const items = cart.map(c => ({ id: c.id, qty: c.qty }));
+      const res = await api.post('/orders', {
+        items,
+        address,
+        payment,
+        customer: user
+      });
+      const order = res.data;
+      setLastOrder(order);
+      setCart([]);
+      return order;
+    } catch (err) {
+      console.error('Failed to place order:', err);
+      throw err;
+    }
+  }, [cart, user]);
 
   const cartCount = cart.reduce((s, c) => s + c.qty, 0);
 
@@ -60,6 +79,7 @@ export function CartProvider({ children }) {
       toast, showToast,
       lastOrder, placeOrder,
       cartCount,
+      products,
     }}>
       {children}
     </CartContext.Provider>

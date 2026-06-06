@@ -1,8 +1,18 @@
-import { CUSTOMERS, inr } from '../../data/products';
+import { useState, useEffect } from 'react';
+import { inr } from '../../data/products';
+import api from '../../utils/api';
 
 const TIER_COLORS = { Gold: '#C5A028', Silver: '#888FA8', Bronze: '#A0724A' };
 
 export default function AdminCustomers() {
+  const [customers, setCustomers] = useState([]);
+
+  useEffect(() => {
+    api.get('/customers')
+      .then(res => setCustomers(res.data))
+      .catch(err => console.error('Failed to load customers:', err));
+  }, []);
+
   return (
     <div>
       <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 40, fontWeight: 500, margin: '0 0 24px' }}>Customers</h1>
@@ -16,7 +26,7 @@ export default function AdminCustomers() {
             </tr>
           </thead>
           <tbody>
-            {CUSTOMERS.map(c => (
+            {customers.map(c => (
               <tr key={c.id} style={{ borderTop: '1px solid var(--line)' }}>
                 <td style={{ padding: '12px 16px', color: 'var(--mute)', fontSize: 11 }}>{c.id}</td>
                 <td style={{ padding: '12px 16px', fontWeight: 500 }}>{c.name}</td>
@@ -29,6 +39,9 @@ export default function AdminCustomers() {
                 </td>
               </tr>
             ))}
+            {customers.length === 0 && (
+              <tr><td colSpan={7} style={{ padding: 40, textAlign: 'center', color: 'var(--mute)' }}>No customers found</td></tr>
+            )}
           </tbody>
         </table>
       </div>

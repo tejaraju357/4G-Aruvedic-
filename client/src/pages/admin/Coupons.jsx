@@ -1,24 +1,47 @@
-import { useState } from 'react';
-import { COUPONS } from '../../data/products';
+import { useState, useEffect } from 'react';
 import Icon from '../../components/ui/Icon';
+import api from '../../utils/api';
 
 export default function AdminCoupons() {
-  const [coupons, setCoupons] = useState(COUPONS);
+  const [coupons, setCoupons] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ code: '', off: '', cap: '' });
 
+  const fetchCoupons = () => {
+    api.get('/coupons')
+      .then(res => setCoupons(res.data))
+      .catch(err => console.error('Failed to load coupons:', err));
+  };
+
+  useEffect(() => {
+    fetchCoupons();
+  }, []);
+
   const addCoupon = () => {
     if (!form.code) return;
-    setCoupons(prev => [...prev, { id: 'c-' + Date.now(), ...form, uses: 0, status: 'Active' }]);
-    setForm({ code: '', off: '', cap: '' });
-    setShowForm(false);
+    api.post('/coupons', { ...form, uses: 0, status: 'Active' })
+      .then(() => {
+        fetchCoupons();
+        setForm({ code: '', off: '', cap: '' });
+        setShowForm(false);
+      })
+      .catch(err => console.error('Failed to create coupon:', err));
   };
 
   const toggleStatus = (id) => {
-    setCoupons(prev => prev.map(c => c.id === id ? { ...c, status: c.status === 'Active' ? 'Paused' : 'Active' } : c));
+    const c = coupons.find(x => x.id === id);
+    if (!c) return;
+    const newStatus = c.status === 'Active' ? 'Paused' : 'Active';
+    api.patch(`/coupons/${id}`, { status: newStatus })
+      .then(() => fetchCoupons())
+      .catch(err => console.error('Failed to toggle status:', err));
   };
 
-  const deleteCoupon = (id) => setCoupons(prev => prev.filter(c => c.id !== id));
+  const deleteCoupon = (id) => {
+    api.delete(`/coupons/${id}`)
+      .then(() => fetchCoupons())
+      .catch(err => console.error('Failed to delete coupon:', err));
+  };
 
   return (
     <div>
@@ -70,6 +93,9 @@ export default function AdminCoupons() {
                 </td>
               </tr>
             ))}
+            {coupons.length === 0 && (
+              <tr><td colSpan={6} style={{ padding: 40, textAlign: 'center', color: 'var(--mute)' }}>No coupons found</td></tr>
+            )}
           </tbody>
         </table>
       </div>

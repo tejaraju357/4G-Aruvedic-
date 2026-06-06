@@ -1,22 +1,43 @@
-import { useState } from 'react';
-import { ORDERS, PRODUCTS, inr } from '../../data/products';
+import { useState, useEffect } from 'react';
+import { inr } from '../../data/products';
+import { useCart } from '../../context/CartContext';
 import Icon from '../../components/ui/Icon';
+import api from '../../utils/api';
 
 const STATUS_COLORS = { Processing: '#E8A24A', Packed: '#4A7FE8', Shipped: '#8A4AE8', Delivered: '#4AE878', Cancelled: '#E84A4A' };
 const ALL_STATUSES = ['All', 'Processing', 'Packed', 'Shipped', 'Delivered', 'Cancelled'];
 
 export default function AdminOrders() {
+  const [orders, setOrders] = useState([]);
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
+  const { products } = useCart();
 
-  const orders = ORDERS.filter(o => {
-    if (filter !== 'All' && o.status !== filter) return false;
+  const fetchOrders = () => {
+    api.get(`/orders${filter !== 'All' ? `?status=${filter}` : ''}`)
+      .then(res => setOrders(res.data))
+      .catch(err => console.error('Failed to load orders:', err));
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, [filter]);
+
+  const handleUpdateStatus = (id, newStatus) => {
+    api.patch(`/orders/${id}`, { status: newStatus })
+      .then(() => {
+        fetchOrders();
+      })
+      .catch(err => console.error('Failed to update status:', err));
+  };
+
+  const filteredOrders = orders.filter(o => {
     if (search && !o.id.toLowerCase().includes(search.toLowerCase()) && !o.customer.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
 
-  const activeOrder = selected ? ORDERS.find(o => o.id === selected) : null;
+  const activeOrder = selected ? orders.find(o => o.id === selected) : null;
 
   return (
     <div>
@@ -55,7 +76,7 @@ export default function AdminOrders() {
               </tr>
             </thead>
             <tbody>
-              {orders.map(o => (
+              {filteredOrders.map(o => (
                 <tr key={o.id} style={{ borderTop: '1px solid var(--line)', cursor: 'pointer', background: selected === o.id ? 'var(--soft)' : 'transparent' }}
                   onClick={() => setSelected(selected === o.id ? null : o.id)}>
                   <td style={{ padding: '12px 16px', fontWeight: 600 }}>{o.id}</td>
@@ -70,7 +91,7 @@ export default function AdminOrders() {
                   <td style={{ padding: '12px 16px' }}><Icon name="chev" size={14} color="var(--mute)" /></td>
                 </tr>
               ))}
-              {orders.length === 0 && (
+              {filteredOrders.length === 0 && (
                 <tr><td colSpan={8} style={{ padding: 40, textAlign: 'center', color: 'var(--mute)' }}>No orders found</td></tr>
               )}
             </tbody>
@@ -100,10 +121,26 @@ export default function AdminOrders() {
                 </div>
               ))}
             </div>
+
+            <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--line)' }}>
+              <div style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--mute)', marginBottom: 10 }}>Update Status</div>
+              <select 
+                value={activeOrder.status} 
+                onChange={e => handleUpdateStatus(activeOrder.id, e.target.value)}
+                style={{
+                  width: '100%', padding: '8px 12px', border: '1px solid var(--line)', borderRadius: 'var(--radius)',
+                  fontFamily: 'var(--font-body)', fontSize: 13, background: 'var(--surface)', color: 'var(--ink)',
+                  outline: 'none', cursor: 'pointer'
+                }}
+              >
+                {ALL_STATUSES.filter(s => s !== 'All').map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+
             <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--line)' }}>
               <div style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--mute)', marginBottom: 10 }}>Items</div>
               {activeOrder.items.map(it => {
-                const p = PRODUCTS.find(x => x.id === it.p);
+                const p = products.find(x => x.id === it.p);
                 return p ? (
                   <div key={it.p} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '4px 0' }}>
                     <span>{p.name} × {it.q}</span>

@@ -1,19 +1,6 @@
-import { PRODUCTS, ORDERS, CUSTOMERS, SALES_14D, inr } from '../../data/products';
-
-const KPIS = [
-  { label: 'Revenue (14d)',  value: inr(357250), delta: '+18.4%', up: true },
-  { label: 'Orders (14d)',   value: '478',       delta: '+12.2%', up: true },
-  { label: 'Avg. order',     value: inr(748),    delta: '+5.6%',  up: true },
-  { label: 'Refunds',        value: inr(2340),   delta: '−1.1%',  up: false },
-];
-
-const BEST_SELLERS = [
-  { ...PRODUCTS[3], sold: 50, revenue: PRODUCTS[3].price * 50 },
-  { ...PRODUCTS[0], sold: 42, revenue: PRODUCTS[0].price * 42 },
-  { ...PRODUCTS[2], sold: 34, revenue: PRODUCTS[2].price * 34 },
-  { ...PRODUCTS[7], sold: 26, revenue: PRODUCTS[7].price * 26 },
-  { ...PRODUCTS[5], sold: 18, revenue: PRODUCTS[5].price * 18 },
-];
+import { useState, useEffect } from 'react';
+import { inr } from '../../data/products';
+import api from '../../utils/api';
 
 function KPICard({ label, value, delta, up }) {
   return (
@@ -40,7 +27,19 @@ function MiniBar({ day, revenue, maxR }) {
 const STATUS_COLORS = { Processing: '#E8A24A', Packed: '#4A7FE8', Shipped: '#8A4AE8', Delivered: '#4AE878', Cancelled: '#E84A4A' };
 
 export default function Dashboard() {
-  const maxR = Math.max(...SALES_14D.map(d => d.r));
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    api.get('/dashboard')
+      .then(res => setData(res.data))
+      .catch(err => console.error('Failed to fetch dashboard data:', err));
+  }, []);
+
+  if (!data) {
+    return <div style={{ padding: 40, color: 'var(--mute)' }}>Loading dashboard...</div>;
+  }
+
+  const maxR = Math.max(...data.sales14d.map(d => d.r));
 
   return (
     <div>
@@ -49,7 +48,15 @@ export default function Dashboard() {
 
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 28 }}>
-        {KPIS.map(k => <KPICard key={k.label} {...k} />)}
+        {data.kpis.map(k => (
+          <KPICard 
+            key={k.label} 
+            label={k.label} 
+            value={k.label === 'Revenue' || k.label === 'Avg. order' || k.label === 'Refunds' ? inr(k.value) : k.value} 
+            delta={k.delta} 
+            up={k.up} 
+          />
+        ))}
       </div>
 
       {/* Chart + Best sellers */}
@@ -60,13 +67,13 @@ export default function Dashboard() {
             <div style={{ fontSize: 12, color: 'var(--mute)' }}>May 13 – May 26</div>
           </div>
           <div style={{ display: 'flex', gap: 4, alignItems: 'flex-end', height: 120 }}>
-            {SALES_14D.map(d => <MiniBar key={d.d} day={d.d} revenue={d.r} maxR={maxR} />)}
+            {data.sales14d.map(d => <MiniBar key={d.d} day={d.d} revenue={d.r} maxR={maxR} />)}
           </div>
         </div>
         <div style={{ padding: 24, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)' }}>
           <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 500, margin: '0 0 16px' }}>Best sellers</h3>
-          {BEST_SELLERS.map((p, i) => (
-            <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: i < BEST_SELLERS.length - 1 ? '1px solid var(--line)' : 'none' }}>
+          {data.bestSellers.map((p, i) => (
+            <div key={p.id || i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: i < data.bestSellers.length - 1 ? '1px solid var(--line)' : 'none' }}>
               <div style={{ width: 24, height: 24, borderRadius: 999, background: 'var(--soft)', display: 'grid', placeItems: 'center', fontSize: 11, color: 'var(--mute)', fontWeight: 600 }}>{i + 1}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
@@ -94,7 +101,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {ORDERS.slice(0, 5).map(o => (
+              {data.recentOrders.map(o => (
                 <tr key={o.id} style={{ borderTop: '1px solid var(--line)' }}>
                   <td style={{ padding: '12px 16px', fontWeight: 500 }}>{o.id}</td>
                   <td style={{ padding: '12px 16px', color: 'var(--mute)' }}>{o.customer}</td>
@@ -115,7 +122,7 @@ export default function Dashboard() {
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--line)' }}>
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 500, margin: 0 }}>Low stock</h3>
           </div>
-          {PRODUCTS.filter(p => p.stock < 120).slice(0, 5).map(p => (
+          {data.lowStock.map(p => (
             <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', borderBottom: '1px solid var(--line)' }}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 500 }}>{p.name}</div>

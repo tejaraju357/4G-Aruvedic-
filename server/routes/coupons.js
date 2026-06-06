@@ -17,4 +17,11 @@ router.delete('/:id', (req, res) => {
   res.json({ ok: true });
 });
 
+router.patch('/:id', (req, res) => {
+  const { status } = req.body;
+  const updated = store.updateCouponStatus(req.params.id, status);
+  if (!updated) return res.status(404).json({ error: 'Coupon not found' });
+  res.json(updated);
+});
+
 module.exports = router;

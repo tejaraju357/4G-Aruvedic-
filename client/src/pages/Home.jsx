@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { PRODUCTS, CATEGORIES, inr } from '../data/products';
+import { CATEGORIES, inr } from '../data/products';
 import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ui/ProductCard';
 import ProductVisual from '../components/ui/ProductVisual';
@@ -23,11 +23,11 @@ const REVIEWS_DATA = [
 
 export default function Home() {
   const navigate = useNavigate();
-  const { addToCart, toggleWishlist, wishlist } = useCart();
+  const { addToCart, toggleWishlist, wishlist, products } = useCart();
   const [heroIdx, setHeroIdx] = useState(0);
   const hero = HEROES[heroIdx];
-  const featuredProduct = PRODUCTS.find(p => p.id === hero.featured);
-  const featured4 = [PRODUCTS[3], PRODUCTS[0], PRODUCTS[2], PRODUCTS[5]];
+  const featuredProduct = products.find(p => p.id === hero.featured);
+  const featured4 = products.length >= 6 ? [products[3], products[0], products[2], products[5]] : products.slice(0, 4);
 
   return (
     <div>
@@ -117,7 +117,7 @@ export default function Home() {
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            {PRODUCTS.slice(4, 8).map(p => (
+            {products.slice(4, 8).map(p => (
               <div key={p.id} onClick={() => navigate(`/product/${p.id}`)} style={{ cursor: 'pointer', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
                 <ProductVisual product={p} height={200} />
               </div>

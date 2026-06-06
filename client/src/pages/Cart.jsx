@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { PRODUCTS, inr } from '../data/products';
+import { inr } from '../data/products';
 import { useCart } from '../context/CartContext';
 import ProductVisual from '../components/ui/ProductVisual';
 import Btn from '../components/ui/Btn';
@@ -17,8 +17,8 @@ function Row({ label, value }) {
 
 export default function Cart() {
   const navigate = useNavigate();
-  const { cart, updateCartQty, removeFromCart } = useCart();
-  const items    = cart.map(c => ({ ...PRODUCTS.find(p => p.id === c.id), qty: c.qty })).filter(x => x.id);
+  const { cart, updateCartQty, removeFromCart, products } = useCart();
+  const items    = cart.map(c => ({ ...products.find(p => p.id === c.id), qty: c.qty })).filter(x => x.id);
   const sub      = items.reduce((s, i) => s + i.price * i.qty, 0);
   const shipping = sub > 999 || sub === 0 ? 0 : 80;
   const tax      = Math.round(sub * 0.05);

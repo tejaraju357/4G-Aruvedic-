@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { PRODUCTS } from '../data/products';
 import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ui/ProductCard';
 import Btn from '../components/ui/Btn';
@@ -7,8 +6,8 @@ import Empty from '../components/ui/Empty';
 
 export default function Wishlist() {
   const navigate = useNavigate();
-  const { wishlist, toggleWishlist, addToCart } = useCart();
-  const items = wishlist.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
+  const { wishlist, toggleWishlist, addToCart, products } = useCart();
+  const items = wishlist.map(id => products.find(p => p.id === id)).filter(Boolean);
 
   if (items.length === 0) {
     return (

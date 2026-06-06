@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { PRODUCTS, inr } from '../data/products';
+import { inr } from '../data/products';
 import { useCart } from '../context/CartContext';
 import ProductVisual from '../components/ui/ProductVisual';
 import Btn from '../components/ui/Btn';
@@ -47,7 +47,7 @@ function Row({ label, value }) {
 
 export default function Checkout() {
   const navigate = useNavigate();
-  const { cart, placeOrder, user } = useCart();
+  const { cart, placeOrder, user, products } = useCart();
   const [step, setStep] = useState(1);
   const [pay, setPay] = useState('upi');
   const [upi, setUpi] = useState('');
@@ -58,13 +58,20 @@ export default function Checkout() {
     city: 'Pune', state: 'Maharashtra', pin: '411001',
   });
 
-  const items = cart.map(c => ({ ...PRODUCTS.find(p => p.id === c.id), qty: c.qty })).filter(x => x.id);
+  const items = cart.map(c => ({ ...products.find(p => p.id === c.id), qty: c.qty })).filter(x => x.id);
   const sub = items.reduce((s, i) => s + i.price * i.qty, 0);
   const shipping = sub > 999 ? 0 : 80;
   const tax = Math.round(sub * 0.05);
   const total = sub + shipping + tax;
 
-  const handlePlaceOrder = () => { placeOrder(addr, pay); navigate('/confirmation'); };
+  const handlePlaceOrder = async () => {
+    try {
+      await placeOrder(addr, pay);
+      navigate('/confirmation');
+    } catch (err) {
+      alert('Failed to place order. Please try again.');
+    }
+  };
 
   const payOpts = [
     { id: 'upi',  label: 'UPI',                 sub: 'Pay via any UPI app',     icon: 'sparkle' },

@@ -381,3 +381,5 @@ Wraps every admin page with a dark sidebar nav. Receives a `section` prop to hig
 ---
 
 *Built with React + Express · Aruvedic Wellness Pvt. Ltd. · 2026*
+#   4 G - A r u v e d i c -  
+ 

@@ -24,7 +24,7 @@ const cols = [
 export default function Footer() {
   return (
     <footer style={{ background: 'var(--ink)', color: 'var(--bg)', padding: '56px 32px 28px', marginTop: 80 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: 40, maxWidth: 1280, margin: '0 auto' }}>
+      <div className="footer-grid" style={{ maxWidth: 1280, margin: '0 auto' }}>
         <div>
           <div style={{ color: 'var(--bg)' }}><Logo size={28} /></div>
           <p style={{ marginTop: 14, fontSize: 13, lineHeight: 1.6, opacity: .7, maxWidth: 280 }}>
@@ -55,10 +55,9 @@ export default function Footer() {
           </div>
         ))}
       </div>
-      <div style={{
+      <div className="footer-bottom" style={{
         borderTop: '1px solid rgba(255,255,255,.1)', marginTop: 40, paddingTop: 20,
-        display: 'flex', justifyContent: 'space-between',
-        maxWidth: 1280, margin: '40px auto 0', fontSize: 12, opacity: .6,
+        maxWidth: 1280, margin: '40px auto 0',
       }}>
         <span>© 2026 Aruvedic Wellness Pvt. Ltd.</span>
         <span>Crafted in India · GMP Certified · AYUSH Approved</span>

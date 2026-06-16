@@ -50,6 +50,7 @@ export default function Header() {
   const navigate = useNavigate();
   const { cartCount, wishlist, user } = useCart();
   const [showSearch, setShowSearch] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const loc = window.location.pathname;
 
   return (
@@ -60,7 +61,7 @@ export default function Header() {
     }}>
       {/* Announcement bar */}
       <div style={{
-        padding: '8px 32px', borderBottom: '1px solid var(--line)',
+        padding: '8px 16px', borderBottom: '1px solid var(--line)',
         textAlign: 'center', fontSize: 11, letterSpacing: '.16em',
         textTransform: 'uppercase', color: 'var(--mute)',
       }}>
@@ -68,21 +69,35 @@ export default function Header() {
       </div>
 
       {/* Main nav */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: '1fr auto 1fr',
-        alignItems: 'center', padding: '18px 32px',
-      }}>
-        <nav style={{ display: 'flex', gap: 24, fontSize: 13, letterSpacing: '.05em' }}>
-          <Link to="/" style={navLinkStyle(loc === '/')}>Shop</Link>
-          <Link to="/shop" style={navLinkStyle(loc === '/shop')}>All Products</Link>
-          <Link to="/shop?cat=skincare" style={navLinkStyle(false)}>Skincare</Link>
-          <Link to="/shop?cat=supplements" style={navLinkStyle(false)}>Wellness</Link>
-        </nav>
+      <div className="header-main-nav">
+        {/* Left section: Desktop nav or Mobile hamburger */}
+        <div className="desktop-only">
+          <nav style={{ display: 'flex', gap: 24, fontSize: 13, letterSpacing: '.05em' }}>
+            <Link to="/" style={navLinkStyle(loc === '/')}>Shop</Link>
+            <Link to="/shop" style={navLinkStyle(loc === '/shop')}>All Products</Link>
+            <Link to="/shop?cat=skincare" style={navLinkStyle(false)}>Skincare</Link>
+            <Link to="/shop?cat=supplements" style={navLinkStyle(false)}>Wellness</Link>
+          </nav>
+        </div>
+        <div className="mobile-only">
+          <button onClick={() => setDrawerOpen(true)} style={{
+            width: 38, height: 38, borderRadius: 999, border: 'none', background: 'transparent',
+            cursor: 'pointer', display: 'grid', placeItems: 'center', color: 'var(--ink)'
+          }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <line x1="4" y1="12" x2="20" y2="12"></line>
+              <line x1="4" y1="6" x2="20" y2="6"></line>
+              <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+          </button>
+        </div>
 
-        <Link to="/" style={{ cursor: 'pointer', color: 'inherit' }}>
+        {/* Center section: Logo */}
+        <Link to="/" style={{ cursor: 'pointer', color: 'inherit', display: 'flex', justifyContent: 'center' }}>
           <Logo size={26} />
         </Link>
 
+        {/* Right section: Icons */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6, alignItems: 'center' }}>
           <IconBtn name="search" onClick={() => setShowSearch(s => !s)} />
           <IconBtn name="user" onClick={() => navigate(user ? '/profile' : '/auth')} />
@@ -93,7 +108,7 @@ export default function Header() {
 
       {/* Search bar */}
       {showSearch && (
-        <div style={{ padding: '12px 32px 16px', borderTop: '1px solid var(--line)', background: 'var(--surface)' }}>
+        <div style={{ padding: '12px 16px 16px', borderTop: '1px solid var(--line)', background: 'var(--surface)' }}>
           <div style={{ position: 'relative', maxWidth: 560, margin: '0 auto' }}>
             <Icon name="search" size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--mute)' }} />
             <input
@@ -116,6 +131,25 @@ export default function Header() {
           </div>
         </div>
       )}
+
+      {/* Mobile Drawer */}
+      {drawerOpen && (
+        <div className="mobile-drawer-backdrop" onClick={() => setDrawerOpen(false)} />
+      )}
+      <div className={`mobile-drawer ${drawerOpen ? 'open' : ''}`}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <Logo size={22} />
+          <button onClick={() => setDrawerOpen(false)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--ink)', display: 'grid', placeItems: 'center' }}>
+            <Icon name="x" size={20} />
+          </button>
+        </div>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: 20, fontSize: 16, letterSpacing: '.05em', marginTop: 20 }}>
+          <Link to="/" onClick={() => setDrawerOpen(false)} style={navLinkStyle(loc === '/')}>Shop</Link>
+          <Link to="/shop" onClick={() => setDrawerOpen(false)} style={navLinkStyle(loc === '/shop')}>All Products</Link>
+          <Link to="/shop?cat=skincare" onClick={() => setDrawerOpen(false)} style={navLinkStyle(false)}>Skincare</Link>
+          <Link to="/shop?cat=supplements" onClick={() => setDrawerOpen(false)} style={navLinkStyle(false)}>Wellness</Link>
+        </nav>
+      </div>
     </header>
   );
 }

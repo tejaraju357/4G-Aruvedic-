@@ -41,18 +41,18 @@ export default function Listing() {
   const activeCatLabel = CATEGORIES.find(c => c.id === activeCat)?.label || 'All Products';
 
   return (
-    <div style={{ padding: '40px 32px 120px', maxWidth: 1280, margin: '0 auto' }}>
-      <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 56, fontWeight: 500, letterSpacing: '-.02em', marginBottom: 8 }}>
+    <div className="page-container" style={{ maxWidth: 1280, margin: '0 auto' }}>
+      <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 500, letterSpacing: '-.02em', marginBottom: 8, marginTop: 0 }}>
         {searchQ ? `"${searchQ}"` : activeCatLabel}
       </h1>
       <p style={{ color: 'var(--mute)', marginBottom: 32 }}>{filtered.length} product{filtered.length !== 1 ? 's' : ''}</p>
 
       {/* Filter & sort bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32, gap: 16, flexWrap: 'wrap' }}>
-        <div style={{ overflowX: 'auto' }}>
+        <div style={{ overflowX: 'auto', width: '100%', maxWidth: '100%', WebkitOverflowScrolling: 'touch', paddingBottom: 4 }}>
           <TabPills tabs={catTabs} value={activeCat} onChange={v => navigate(v === 'all' ? '/shop' : `/shop?cat=${v}`)} />
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
           <select value={sort} onChange={e => setSort(e.target.value)} style={{ padding: '8px 14px', border: '1px solid var(--line)', borderRadius: 999, background: 'var(--surface)', fontSize: 13, fontFamily: 'var(--font-body)', color: 'var(--ink)', cursor: 'pointer' }}>
             {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
@@ -68,7 +68,7 @@ export default function Listing() {
           <p>No products found. <span style={{ color: 'var(--ink)', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => navigate('/shop')}>Clear filters</span></p>
         </div>
       ) : viewMode === 'grid' ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 28 }}>
+        <div className="responsive-grid-4col">
           {filtered.map(p => (
             <ProductCard key={p.id} product={p} onOpen={id => navigate(`/product/${id}`)} onAdd={addToCart} onWish={toggleWishlist} wished={wishlist.includes(p.id)} />
           ))}
@@ -78,12 +78,12 @@ export default function Listing() {
           {filtered.map(p => {
             const discount = Math.round((1 - p.price / p.mrp) * 100);
             return (
-              <div key={p.id} style={{ display: 'grid', gridTemplateColumns: '100px 1fr auto', gap: 20, padding: '20px 24px', background: 'var(--surface)', borderBottom: '1px solid var(--line)', cursor: 'pointer', transition: 'background .15s' }}
+              <div key={p.id} className="listing-list-item" style={{ background: 'var(--surface)', borderBottom: '1px solid var(--line)', cursor: 'pointer', transition: 'background .15s' }}
                 onClick={() => navigate(`/product/${p.id}`)}
                 onMouseEnter={e => e.currentTarget.style.background = 'var(--soft)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'var(--surface)'}
               >
-                <div style={{ borderRadius: 'var(--radius)', overflow: 'hidden', background: 'var(--soft)', display: 'grid', placeItems: 'center', height: 80 }}>
+                <div style={{ borderRadius: 'var(--radius)', overflow: 'hidden', background: 'var(--soft)', display: 'grid', placeItems: 'center', height: 80, width: 80 }}>
                   <svg viewBox="0 0 100 100" style={{ width: '100%', height: 80 }}>
                     <circle cx="50" cy="50" r="45" fill={p.swatch} fillOpacity=".2" />
                     <path d="M50 10 C 35 35, 35 65, 50 90 C 65 65, 65 35, 50 10Z" fill="none" stroke={p.swatch} strokeWidth="1" opacity=".5" />

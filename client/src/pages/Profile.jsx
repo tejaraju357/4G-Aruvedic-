@@ -37,14 +37,14 @@ export default function Profile() {
   }, [tab]);
 
   return (
-    <div style={{ padding: '40px 32px 120px', maxWidth: 1280, margin: '0 auto' }}>
-      <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 56, fontWeight: 500, letterSpacing: '-.02em' }}>
+    <div className="page-container" style={{ maxWidth: 1280, margin: '0 auto' }}>
+      <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 5vw, 56px)', fontWeight: 500, letterSpacing: '-.02em', marginTop: 0 }}>
         Hello, {user?.name?.split(' ')[0] || 'friend'}
       </h1>
       <p style={{ color: 'var(--mute)', marginTop: 4 }}>Member since September 2024 · Gold tier</p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 48, marginTop: 36 }}>
-        <aside style={{ display: 'grid', gap: 4, alignContent: 'start' }}>
+      <div className="responsive-sidebar-layout" style={{ marginTop: 36 }}>
+        <aside className="profile-sidebar">
           {[
             { id: 'orders',   label: 'Orders',          icon: 'box' },
             { id: 'details',  label: 'Account details',  icon: 'user' },
@@ -75,7 +75,7 @@ export default function Profile() {
               <div style={{ display: 'grid', gap: 14, marginTop: 18 }}>
                 {orders.map(o => (
                   <div key={o.id} style={{ padding: 20, border: '1px solid var(--line)', borderRadius: 'var(--radius)', background: 'var(--surface)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
                       <div>
                         <div style={{ fontFamily: 'var(--font-display)', fontSize: 18 }}>#{o.id}</div>
                         <div style={{ fontSize: 12, color: 'var(--mute)', marginTop: 4 }}>{o.date} · {o.pay}</div>
@@ -109,7 +109,7 @@ export default function Profile() {
           {tab === 'details' && (
             <div>
               <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 500, marginTop: 0 }}>Account details</h2>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginTop: 18, maxWidth: 540 }}>
+              <div className="form-grid-2col" style={{ marginTop: 18, maxWidth: 540 }}>
                 <Field label="Full name" value={user?.name || ''} onChange={v => setUser({ ...user, name: v })} />
                 <Field label="Phone" value="+91 98765 43210" onChange={() => {}} />
                 <Field span={2} label="Email" value={user?.email || ''} onChange={v => setUser({ ...user, email: v })} />
@@ -126,12 +126,12 @@ export default function Profile() {
                   { l: 'Home',   a: 'Flat 4B, Indrayani Apartments, 12 Brook Road, Pune 411001' },
                   { l: 'Office', a: 'WeWork Vaswani Chambers, 264-265 Annie Besant Road, Mumbai 400025' },
                 ].map(ad => (
-                  <div key={ad.l} style={{ padding: 20, border: '1px solid var(--line)', borderRadius: 'var(--radius)', background: 'var(--surface)', display: 'flex', justifyContent: 'space-between' }}>
+                  <div key={ad.l} style={{ padding: 20, border: '1px solid var(--line)', borderRadius: 'var(--radius)', background: 'var(--surface)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
                     <div>
                       <div style={{ fontFamily: 'var(--font-display)', fontSize: 18 }}>{ad.l}</div>
                       <div style={{ fontSize: 13, color: 'var(--mute)', marginTop: 6, maxWidth: 360 }}>{ad.a}</div>
                     </div>
-                    <div style={{ display: 'flex', gap: 8 }}>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                       <Btn variant="ghost" size="sm" icon="pencil">Edit</Btn>
                       <Btn variant="bare" size="sm" icon="trash">Remove</Btn>
                     </div>

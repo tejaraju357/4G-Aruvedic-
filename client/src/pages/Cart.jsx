@@ -28,8 +28,8 @@ export default function Cart() {
 
   if (items.length === 0) {
     return (
-      <div style={{ padding: '40px 32px 120px', maxWidth: 720, margin: '0 auto' }}>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 56, fontWeight: 500, letterSpacing: '-.02em', marginBottom: 8 }}>Your cart</h1>
+      <div className="page-container" style={{ maxWidth: 720, margin: '0 auto' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 5vw, 56px)', fontWeight: 500, letterSpacing: '-.02em', marginBottom: 8, marginTop: 0 }}>Your cart</h1>
         <Empty icon="bag" title="Nothing in here yet"
           sub="Browse the apothecary and add a few essentials."
           action={<Btn variant="primary" onClick={() => navigate('/')}>Shop the apothecary</Btn>}
@@ -39,22 +39,22 @@ export default function Cart() {
   }
 
   return (
-    <div style={{ padding: '40px 32px 120px', maxWidth: 1280, margin: '0 auto' }}>
-      <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 56, fontWeight: 500, letterSpacing: '-.02em' }}>Your cart</h1>
+    <div className="page-container" style={{ maxWidth: 1280, margin: '0 auto' }}>
+      <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 5vw, 56px)', fontWeight: 500, letterSpacing: '-.02em', marginTop: 0 }}>Your cart</h1>
       <p style={{ color: 'var(--mute)', marginTop: 4 }}>{items.length} item{items.length > 1 ? 's' : ''}</p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 48, marginTop: 36 }}>
+      <div className="responsive-split-skewed" style={{ marginTop: 36 }}>
         {/* Items */}
         <div>
           {items.map(item => (
-            <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '120px 1fr auto', gap: 20, padding: '24px 0', borderTop: '1px solid var(--line)' }}>
+            <div key={item.id} className="cart-item-row">
               <div style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${item.id}`)}>
                 <ProductVisual product={item} height={120} />
               </div>
               <div>
                 <div style={{ fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--mute)' }}>{item.sub}</div>
                 <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, marginTop: 4, cursor: 'pointer' }} onClick={() => navigate(`/product/${item.id}`)}>{item.name}</div>
-                <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 14 }}>
+                <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--line)', borderRadius: 999 }}>
                     <button style={qtyBtnStyle} onClick={() => updateCartQty(item.id, Math.max(1, item.qty - 1))}><Icon name="minus" size={12} /></button>
                     <span style={{ padding: '0 12px', fontSize: 13, minWidth: 26, textAlign: 'center' }}>{item.qty}</span>
@@ -72,15 +72,15 @@ export default function Cart() {
             </div>
           ))}
 
-          <div style={{ marginTop: 32, padding: 20, background: 'var(--soft)', borderRadius: 'var(--radius)', display: 'flex', gap: 12, alignItems: 'center' }}>
+          <div style={{ marginTop: 32, padding: 20, background: 'var(--soft)', borderRadius: 'var(--radius)', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
             <Icon name="tag" size={18} />
-            <input placeholder="Enter coupon code" style={{ flex: 1, border: 'none', background: 'transparent', fontFamily: 'var(--font-body)', fontSize: 14, outline: 'none', color: 'var(--ink)' }} />
+            <input placeholder="Enter coupon code" style={{ flex: 1, minWidth: 150, border: 'none', background: 'transparent', fontFamily: 'var(--font-body)', fontSize: 14, outline: 'none', color: 'var(--ink)' }} />
             <Btn variant="ghost" size="sm">Apply</Btn>
           </div>
         </div>
 
         {/* Summary */}
-        <div style={{ position: 'sticky', top: 100, height: 'fit-content' }}>
+        <div className="product-visual-sticky" style={{ height: 'fit-content' }}>
           <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)', padding: 28 }}>
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 500, marginTop: 0 }}>Order summary</h3>
             <div style={{ marginTop: 18, display: 'grid', gap: 10 }}>

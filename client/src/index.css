@@ -428,3 +428,172 @@ img { max-width: 100%; display: block; }
   }
 }
 
+/* Product Page Responsive Classes */
+.product-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+.product-visual-sticky {
+  position: sticky;
+  top: 100px;
+}
+@media (max-width: 768px) {
+  .product-detail-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .product-visual-sticky {
+    position: relative;
+    top: 0;
+  }
+}
+
+/* Cart Page Responsive Classes */
+.cart-item-row {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 20px;
+  padding: 24px 0;
+  border-top: 1px solid var(--line);
+}
+@media (max-width: 560px) {
+  .cart-item-row {
+    grid-template-columns: 80px 1fr;
+    gap: 16px;
+    padding: 16px 0;
+  }
+  .cart-item-row > div:last-child {
+    grid-column: 1 / -1;
+    text-align: left !important;
+    border-top: 1px dashed var(--line);
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* Checkout Page Responsive Classes */
+.form-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 560px) {
+  .form-grid-2col {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .form-grid-2col > label {
+    grid-column: span 1 !important;
+  }
+  .form-grid-2col > div {
+    grid-column: span 1 !important;
+  }
+}
+
+/* Profile Page Responsive Classes */
+.profile-sidebar {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+}
+@media (max-width: 768px) {
+  .profile-sidebar {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .profile-sidebar button {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+/* Auth Page Responsive Classes */
+.auth-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+@media (max-width: 768px) {
+  .auth-grid {
+    grid-template-columns: 1fr;
+  }
+  .auth-grid > div:first-child {
+    display: none !important;
+  }
+  .auth-grid > form {
+    padding: 32px 20px !important;
+  }
+}
+
+/* Admin Dashboard Responsive Classes */
+.admin-dashboard-split {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 900px) {
+  .admin-dashboard-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Coupon Page Responsive Classes */
+.coupon-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+@media (max-width: 768px) {
+  .coupon-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .coupon-form-grid button {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
+
+/* Admin Orders Page Responsive Classes */
+.admin-orders-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 16px;
+}
+.admin-orders-layout.single {
+  grid-template-columns: 1fr;
+}
+@media (max-width: 900px) {
+  .admin-orders-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Admin Reviews Page Responsive Classes */
+.admin-review-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+@media (max-width: 560px) {
+  .admin-review-card {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .admin-review-card > div:last-child {
+    margin-left: 0 !important;
+    justify-content: flex-start;
+  }
+}
+

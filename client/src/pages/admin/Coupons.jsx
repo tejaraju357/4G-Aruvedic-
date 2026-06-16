@@ -53,7 +53,7 @@ export default function AdminCoupons() {
       </div>
 
       {showForm && (
-        <div style={{ marginBottom: 20, padding: 24, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 12, alignItems: 'end' }}>
+        <div className="coupon-form-grid" style={{ marginBottom: 20, padding: 24, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)' }}>
           {[['Code', 'code', 'WELCOME10'], ['Discount', 'off', '15% or ₹150'], ['Cap', 'cap', '₹400']].map(([l, k, ph]) => (
             <label key={k} style={{ display: 'block' }}>
               <div style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--mute)', marginBottom: 6 }}>{l}</div>
@@ -65,7 +65,8 @@ export default function AdminCoupons() {
       )}
 
       <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+        <div className="scrollable-table-container">
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 600 }}>
           <thead>
             <tr style={{ background: 'var(--soft)' }}>
               {['Code', 'Discount', 'Cap', 'Uses', 'Status', 'Actions'].map(h => (
@@ -98,6 +99,7 @@ export default function AdminCoupons() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

@@ -45,57 +45,59 @@ export default function AdminOrders() {
 
       {/* Filter bar */}
       <div style={{ display: 'flex', gap: 12, marginBottom: 20, alignItems: 'center', flexWrap: 'wrap' }}>
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative', width: '100%', maxWidth: 260 }}>
           <Icon name="search" size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--mute)' }} />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search order ID or customer…" style={{
             paddingLeft: 36, paddingRight: 14, paddingTop: 8, paddingBottom: 8,
             border: '1px solid var(--line)', borderRadius: 999, fontSize: 13,
-            fontFamily: 'var(--font-body)', background: 'var(--surface)', color: 'var(--ink)', outline: 'none', width: 260,
+            fontFamily: 'var(--font-body)', background: 'var(--surface)', color: 'var(--ink)', outline: 'none', width: '100%', boxSizing: 'border-box'
           }} />
         </div>
-        <div style={{ display: 'flex', gap: 6 }}>
+        <div style={{ display: 'flex', gap: 6, overflowX: 'auto', width: '100%', maxWidth: '100%', WebkitOverflowScrolling: 'touch', paddingBottom: 4, flex: 1 }}>
           {ALL_STATUSES.map(s => (
             <button key={s} onClick={() => setFilter(s)} style={{
               padding: '6px 14px', borderRadius: 999, border: '1px solid ' + (filter === s ? 'var(--ink)' : 'var(--line)'),
               background: filter === s ? 'var(--ink)' : 'transparent', color: filter === s ? 'var(--bg)' : 'var(--ink)',
-              fontSize: 12, cursor: 'pointer', fontFamily: 'var(--font-body)',
+              fontSize: 12, cursor: 'pointer', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap'
             }}>{s}</button>
           ))}
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: activeOrder ? '1fr 360px' : '1fr', gap: 16 }}>
+      <div className={`admin-orders-layout ${activeOrder ? '' : 'single'}`}>
         {/* Table */}
         <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-            <thead>
-              <tr style={{ background: 'var(--soft)' }}>
-                {['Order ID', 'Customer', 'Date', 'City', 'Total', 'Payment', 'Status', ''].map(h => (
-                  <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 500, fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--mute)', whiteSpace: 'nowrap' }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredOrders.map(o => (
-                <tr key={o.id} style={{ borderTop: '1px solid var(--line)', cursor: 'pointer', background: selected === o.id ? 'var(--soft)' : 'transparent' }}
-                  onClick={() => setSelected(selected === o.id ? null : o.id)}>
-                  <td style={{ padding: '12px 16px', fontWeight: 600 }}>{o.id}</td>
-                  <td style={{ padding: '12px 16px' }}>{o.customer}</td>
-                  <td style={{ padding: '12px 16px', color: 'var(--mute)' }}>{o.date}</td>
-                  <td style={{ padding: '12px 16px', color: 'var(--mute)' }}>{o.city}</td>
-                  <td style={{ padding: '12px 16px', fontWeight: 500 }}>{inr(o.total)}</td>
-                  <td style={{ padding: '12px 16px', color: 'var(--mute)' }}>{o.pay}</td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 999, background: (STATUS_COLORS[o.status] || '#888') + '22', color: STATUS_COLORS[o.status] || '#888' }}>{o.status}</span>
-                  </td>
-                  <td style={{ padding: '12px 16px' }}><Icon name="chev" size={14} color="var(--mute)" /></td>
+          <div className="scrollable-table-container">
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 800 }}>
+              <thead>
+                <tr style={{ background: 'var(--soft)' }}>
+                  {['Order ID', 'Customer', 'Date', 'City', 'Total', 'Payment', 'Status', ''].map(h => (
+                    <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 500, fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--mute)', whiteSpace: 'nowrap' }}>{h}</th>
+                  ))}
                 </tr>
-              ))}
-              {filteredOrders.length === 0 && (
-                <tr><td colSpan={8} style={{ padding: 40, textAlign: 'center', color: 'var(--mute)' }}>No orders found</td></tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredOrders.map(o => (
+                  <tr key={o.id} style={{ borderTop: '1px solid var(--line)', cursor: 'pointer', background: selected === o.id ? 'var(--soft)' : 'transparent' }}
+                    onClick={() => setSelected(selected === o.id ? null : o.id)}>
+                    <td style={{ padding: '12px 16px', fontWeight: 600 }}>{o.id}</td>
+                    <td style={{ padding: '12px 16px' }}>{o.customer}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--mute)' }}>{o.date}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--mute)' }}>{o.city}</td>
+                    <td style={{ padding: '12px 16px', fontWeight: 500 }}>{inr(o.total)}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--mute)' }}>{o.pay}</td>
+                    <td style={{ padding: '12px 16px' }}>
+                      <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 999, background: (STATUS_COLORS[o.status] || '#888') + '22', color: STATUS_COLORS[o.status] || '#888' }}>{o.status}</span>
+                    </td>
+                    <td style={{ padding: '12px 16px' }}><Icon name="chev" size={14} color="var(--mute)" /></td>
+                  </tr>
+                ))}
+                {filteredOrders.length === 0 && (
+                  <tr><td colSpan={8} style={{ padding: 40, textAlign: 'center', color: 'var(--mute)' }}>No orders found</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Order detail panel */}

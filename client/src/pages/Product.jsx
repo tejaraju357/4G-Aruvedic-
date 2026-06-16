@@ -49,9 +49,9 @@ export default function Product() {
   };
 
   return (
-    <div style={{ padding: '40px 0 80px' }}>
+    <div style={{ padding: '24px 0 80px' }}>
       {/* Breadcrumb */}
-      <div style={{ padding: '0 32px 24px', maxWidth: 1280, margin: '0 auto', fontSize: 12, color: 'var(--mute)' }}>
+      <div style={{ padding: '0 16px 24px', maxWidth: 1280, margin: '0 auto', fontSize: 12, color: 'var(--mute)', boxSizing: 'border-box' }}>
         <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>Home</span>
         {' / '}
         <span style={{ cursor: 'pointer' }} onClick={() => navigate(`/shop?cat=${p.cat}`)}>
@@ -62,10 +62,10 @@ export default function Product() {
       </div>
 
       {/* Main product section */}
-      <div style={{ padding: '0 32px', maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'start' }}>
+      <div className="product-detail-layout" style={{ padding: '0 16px', maxWidth: 1280, margin: '0 auto', boxSizing: 'border-box' }}>
         {/* Left: visuals */}
-        <div style={{ position: 'sticky', top: 100 }}>
-          <ProductVisual product={p} height={520} />
+        <div className="product-visual-sticky" style={{ width: '100%' }}>
+          <ProductVisual product={p} height={400} />
           <div style={{ marginTop: 12, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
             {[0, 1, 2, 3].map(i => (
               <div key={i} style={{ borderRadius: 'var(--radius)', overflow: 'hidden', border: i === 0 ? '2px solid var(--ink)' : '1px solid var(--line)', cursor: 'pointer' }}>
@@ -76,9 +76,9 @@ export default function Product() {
         </div>
 
         {/* Right: info */}
-        <div>
+        <div style={{ width: '100%' }}>
           <div style={{ fontSize: 11, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--mute)' }}>{p.sub}</div>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 52, fontWeight: 500, lineHeight: 1.0, letterSpacing: '-.02em', marginTop: 8 }}>{p.name}</h1>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 500, lineHeight: 1.1, letterSpacing: '-.02em', marginTop: 8 }}>{p.name}</h1>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12 }}>
             <Stars rating={p.rating} size={14} showNum />
@@ -112,7 +112,7 @@ export default function Product() {
           {/* Pack selector */}
           <div style={{ marginTop: 24 }}>
             <div style={{ fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--mute)', marginBottom: 10 }}>Pack size</div>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {PACK_OPTIONS.map((opt, i) => (
                 <button key={i} onClick={() => setPack(i)} style={{
                   padding: '10px 16px', borderRadius: 'var(--radius)',
@@ -133,13 +133,13 @@ export default function Product() {
           </div>
 
           {/* Qty + Add to cart */}
-          <div style={{ marginTop: 24, display: 'flex', gap: 12, alignItems: 'center' }}>
+          <div style={{ marginTop: 24, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--line)', borderRadius: 999 }}>
               <button style={cartQtyBtn} onClick={() => setQty(q => Math.max(1, q - 1))}><Icon name="minus" size={14} /></button>
               <span style={{ padding: '0 14px', fontSize: 15, minWidth: 32, textAlign: 'center' }}>{qty}</span>
               <button style={cartQtyBtn} onClick={() => setQty(q => q + 1)}><Icon name="plus" size={14} /></button>
             </div>
-            <Btn variant="primary" size="lg" style={{ flex: 1 }} onClick={() => { addToCart(p.id, qty); }}>
+            <Btn variant="primary" size="lg" style={{ flex: 1, minWidth: 200 }} onClick={() => { addToCart(p.id, qty); }}>
               {p.stock > 0 ? 'Add to cart' : 'Notify me when available'}
             </Btn>
             <button
@@ -170,11 +170,13 @@ export default function Product() {
 
           {/* Tabs */}
           <div style={{ marginTop: 36 }}>
-            <TabPills
-              tabs={[{ value: 'how', label: 'How to use' }, { value: 'ingredients', label: 'Ingredients' }, { value: 'reviews', label: `Reviews (${p.reviews})` }]}
-              value={tab}
-              onChange={setTab}
-            />
+            <div style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch', paddingBottom: 4 }}>
+              <TabPills
+                tabs={[{ value: 'how', label: 'How to use' }, { value: 'ingredients', label: 'Ingredients' }, { value: 'reviews', label: `Reviews (${p.reviews})` }]}
+                value={tab}
+                onChange={setTab}
+              />
+            </div>
             <div style={{ marginTop: 20, fontSize: 14, lineHeight: 1.7, color: 'var(--mute)' }}>
               {tab === 'how' && <p>{p.use}</p>}
               {tab === 'ingredients' && <p>{p.ingredients}</p>}
@@ -199,9 +201,9 @@ export default function Product() {
 
       {/* Related products */}
       {related.length > 0 && (
-        <section style={{ padding: '80px 32px 0', maxWidth: 1280, margin: '0 auto' }}>
+        <section style={{ padding: '80px 16px 0', maxWidth: 1280, margin: '0 auto', boxSizing: 'border-box' }}>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 36, fontWeight: 500, marginBottom: 32 }}>You may also like</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 24 }}>
+          <div className="responsive-grid-4col">
             {related.map(rp => (
               <ProductCard
                 key={rp.id} product={rp}

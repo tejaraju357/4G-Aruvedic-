@@ -30,12 +30,12 @@ export default function AdminReviews() {
     <div>
       <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 40, fontWeight: 500, margin: '0 0 24px' }}>Reviews</h1>
 
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 20, overflowX: 'auto', width: '100%', maxWidth: '100%', WebkitOverflowScrolling: 'touch', paddingBottom: 4 }}>
         {['All', 'Pending', 'Published', 'Rejected'].map(s => (
           <button key={s} onClick={() => setFilter(s)} style={{
             padding: '6px 14px', borderRadius: 999, border: '1px solid ' + (filter === s ? 'var(--ink)' : 'var(--line)'),
             background: filter === s ? 'var(--ink)' : 'transparent', color: filter === s ? 'var(--bg)' : 'var(--ink)',
-            fontSize: 12, cursor: 'pointer', fontFamily: 'var(--font-body)',
+            fontSize: 12, cursor: 'pointer', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap'
           }}>{s}</button>
         ))}
       </div>
@@ -45,9 +45,9 @@ export default function AdminReviews() {
           const product = products.find(p => p.id === r.product);
           return (
             <div key={r.id} style={{ padding: 20, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div className="admin-review-card">
                 <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 8 }}>
+                  <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 8, flexWrap: 'wrap' }}>
                     <Stars rating={r.rating} size={12} />
                     <span style={{ fontSize: 12, color: 'var(--mute)' }}>{r.date}</span>
                     <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 999, background: r.status === 'Published' ? '#4AE87822' : r.status === 'Pending' ? '#E8A24A22' : '#E84A4A22', color: r.status === 'Published' ? '#2E9E50' : r.status === 'Pending' ? '#C87020' : '#C84040' }}>{r.status}</span>

@@ -47,7 +47,7 @@ export default function Dashboard() {
       <p style={{ color: 'var(--mute)', marginBottom: 28 }}>Last 14 days · Updated just now</p>
 
       {/* KPIs */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 28 }}>
+      <div className="responsive-grid-4col" style={{ marginBottom: 28, gap: 16 }}>
         {data.kpis.map(k => (
           <KPICard 
             key={k.label} 
@@ -60,13 +60,13 @@ export default function Dashboard() {
       </div>
 
       {/* Chart + Best sellers */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 16, marginBottom: 28 }}>
-        <div style={{ padding: 24, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+      <div className="admin-dashboard-split" style={{ marginBottom: 28 }}>
+        <div style={{ padding: 24, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20, gap: 16, flexWrap: 'wrap' }}>
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 500, margin: 0 }}>Revenue</h3>
             <div style={{ fontSize: 12, color: 'var(--mute)' }}>May 13 – May 26</div>
           </div>
-          <div style={{ display: 'flex', gap: 4, alignItems: 'flex-end', height: 120 }}>
+          <div style={{ display: 'flex', gap: 4, alignItems: 'flex-end', height: 120, minWidth: 400 }}>
             {data.sales14d.map(d => <MiniBar key={d.d} day={d.d} revenue={d.r} maxR={maxR} />)}
           </div>
         </div>
@@ -86,36 +86,38 @@ export default function Dashboard() {
       </div>
 
       {/* Recent orders + Low stock */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 16 }}>
+      <div className="admin-dashboard-split">
         <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 500, margin: 0 }}>Recent orders</h3>
             <a href="/admin/orders" style={{ fontSize: 12, color: 'var(--mute)' }}>View all →</a>
           </div>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-            <thead>
-              <tr style={{ background: 'var(--soft)' }}>
-                {['Order', 'Customer', 'Date', 'Total', 'Status'].map(h => (
-                  <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 500, fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--mute)' }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.recentOrders.map(o => (
-                <tr key={o.id} style={{ borderTop: '1px solid var(--line)' }}>
-                  <td style={{ padding: '12px 16px', fontWeight: 500 }}>{o.id}</td>
-                  <td style={{ padding: '12px 16px', color: 'var(--mute)' }}>{o.customer}</td>
-                  <td style={{ padding: '12px 16px', color: 'var(--mute)' }}>{o.date}</td>
-                  <td style={{ padding: '12px 16px' }}>{inr(o.total)}</td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 999, background: STATUS_COLORS[o.status] + '22', color: STATUS_COLORS[o.status] }}>
-                      {o.status}
-                    </span>
-                  </td>
+          <div className="scrollable-table-container">
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 500 }}>
+              <thead>
+                <tr style={{ background: 'var(--soft)' }}>
+                  {['Order', 'Customer', 'Date', 'Total', 'Status'].map(h => (
+                    <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 500, fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--mute)' }}>{h}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data.recentOrders.map(o => (
+                  <tr key={o.id} style={{ borderTop: '1px solid var(--line)' }}>
+                    <td style={{ padding: '12px 16px', fontWeight: 500 }}>{o.id}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--mute)' }}>{o.customer}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--mute)' }}>{o.date}</td>
+                    <td style={{ padding: '12px 16px' }}>{inr(o.total)}</td>
+                    <td style={{ padding: '12px 16px' }}>
+                      <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 999, background: STATUS_COLORS[o.status] + '22', color: STATUS_COLORS[o.status] }}>
+                        {o.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)', overflow: 'hidden' }}>

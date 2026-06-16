@@ -52,8 +52,8 @@ export default function Auth() {
   };
 
   return (
-    <div style={{ padding: '60px 32px 120px', maxWidth: 1180, margin: '0 auto' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderRadius: 'var(--radius)', overflow: 'hidden', border: '1px solid var(--line)', background: 'var(--surface)' }}>
+    <div className="page-container" style={{ maxWidth: 1180, margin: '0 auto' }}>
+      <div className="auth-grid">
         <div style={{ background: 'var(--soft)', padding: 56, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 600 }}>
           <Logo size={26} />
           <div>
@@ -84,7 +84,7 @@ export default function Auth() {
           </div>
 
           <div style={{ marginTop: 24 }}>
-            <Btn variant="primary" type="submit">
+            <Btn variant="primary" type="submit" full>
               {mode === 'signin' ? 'Sign in →' : 'Create account →'}
             </Btn>
           </div>

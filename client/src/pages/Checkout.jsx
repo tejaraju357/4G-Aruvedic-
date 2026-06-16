@@ -81,9 +81,9 @@ export default function Checkout() {
   ];
 
   return (
-    <div style={{ padding: '40px 32px 120px', maxWidth: 1280, margin: '0 auto' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 48, fontWeight: 500, letterSpacing: '-.02em', margin: 0 }}>Checkout</h1>
+    <div className="page-container" style={{ maxWidth: 1280, margin: '0 auto' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 48px)', fontWeight: 500, letterSpacing: '-.02em', margin: 0 }}>Checkout</h1>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           {[1, 2, 3].map((n, i) => (
             <div key={n} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -94,11 +94,11 @@ export default function Checkout() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 48, marginTop: 36 }}>
+      <div className="responsive-split-skewed" style={{ marginTop: 36 }}>
         <div>
           <StepBlock n={1} title="Delivery address" open={step >= 1} done={step > 1}>
             {step === 1 ? (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+              <div className="form-grid-2col">
                 <Field label="Full name" value={addr.name} onChange={v => setAddr({ ...addr, name: v })} />
                 <Field label="Phone" value={addr.phone} onChange={v => setAddr({ ...addr, phone: v })} />
                 <Field span={2} label="Address line 1" value={addr.line1} onChange={v => setAddr({ ...addr, line1: v })} />
@@ -137,7 +137,7 @@ export default function Checkout() {
                 {pay === 'upi' && (
                   <div style={{ marginTop: 16, padding: 18, background: 'var(--soft)', borderRadius: 'var(--radius)' }}>
                     <Field label="UPI ID" value={upi} onChange={setUpi} placeholder="yourname@hdfcbank" />
-                    <div style={{ marginTop: 12, display: 'flex', gap: 10 }}>
+                    <div style={{ marginTop: 12, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                       {['GPay', 'PhonePe', 'Paytm', 'BHIM'].map(app => (
                         <div key={app} style={{ padding: '8px 14px', background: 'var(--surface)', borderRadius: 999, fontSize: 12, border: '1px solid var(--line)', cursor: 'pointer' }}>{app}</div>
                       ))}
@@ -148,7 +148,7 @@ export default function Checkout() {
                   <div style={{ marginTop: 16, padding: 18, background: 'var(--soft)', borderRadius: 'var(--radius)', display: 'grid', gap: 12 }}>
                     <Field label="Card number" value={card.num} onChange={v => setCard({ ...card, num: v })} placeholder="1234 5678 9012 3456" />
                     <Field label="Name on card" value={card.name} onChange={v => setCard({ ...card, name: v })} />
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div className="form-grid-2col" style={{ gap: 12 }}>
                       <Field label="Expiry" value={card.exp} onChange={v => setCard({ ...card, exp: v })} placeholder="MM / YY" />
                       <Field label="CVV" value={card.cvv} onChange={v => setCard({ ...card, cvv: v })} placeholder="•••" />
                     </div>
@@ -179,9 +179,9 @@ export default function Checkout() {
               <div>
                 <div style={{ display: 'grid', gap: 10 }}>
                   {items.map(it => (
-                    <div key={it.id} style={{ display: 'flex', gap: 14, alignItems: 'center', padding: 10, background: 'var(--surface)', borderRadius: 'var(--radius)', border: '1px solid var(--line)' }}>
+                    <div key={it.id} style={{ display: 'flex', gap: 14, alignItems: 'center', padding: 10, background: 'var(--surface)', borderRadius: 'var(--radius)', border: '1px solid var(--line)', flexWrap: 'wrap' }}>
                       <div style={{ width: 56, height: 56 }}><ProductVisual product={it} height={56} /></div>
-                      <div style={{ flex: 1 }}>
+                      <div style={{ flex: 1, minWidth: 120 }}>
                         <div style={{ fontSize: 14, fontWeight: 500 }}>{it.name}</div>
                         <div style={{ fontSize: 12, color: 'var(--mute)' }}>Qty {it.qty}</div>
                       </div>
@@ -199,12 +199,12 @@ export default function Checkout() {
         </div>
 
         {/* Sticky summary */}
-        <div style={{ position: 'sticky', top: 100, height: 'fit-content' }}>
+        <div className="product-visual-sticky" style={{ height: 'fit-content' }}>
           <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--radius)', padding: 28 }}>
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 500, margin: 0 }}>Summary</h3>
             <div style={{ marginTop: 16, display: 'grid', gap: 10 }}>
               {items.map(it => (
-                <div key={it.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                <div key={it.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, gap: 10 }}>
                   <span>{it.name} <span style={{ color: 'var(--mute)' }}>× {it.qty}</span></span>
                   <span>{inr(it.price * it.qty)}</span>
                 </div>
